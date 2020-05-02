@@ -20,8 +20,7 @@
     modern systems.
 ]]
 
-font = love.graphics.newFont(50)
-love.graphics.setFont(font)
+
 
 WINDOW_WIDTH = 1920
 WINDOW_HEIGHT = 1080
@@ -31,10 +30,13 @@ WINDOW_HEIGHT = 1080
 
 function love.load()
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
+        fullscreen = false,
         resizable = true,
         vsync = true
     })
     love.window.maximize()
+    font = love.graphics.newFont(50)
+    love.graphics.setFont(font)
 end
 
 
@@ -49,3 +51,19 @@ function love.draw()
         WINDOW_WIDTH,           -- number of pixels to allign within
         'center')               -- alignment mode, can be 'center', 'left', or 'right'
 end
+
+function love.keypressed(key)
+    --If escape key is pressed exit fullscreen
+    if key == 'escape' then
+        love.window.setFullscreen(false)
+    end
+    --F11 toggles between fullscreen and maximised
+    if key == 'f11' then
+        if love.window.getFullscreen() == false then
+            love.window.setFullscreen(true)
+        else
+            love.window.setFullscreen(false)
+        end
+    end
+end
+
