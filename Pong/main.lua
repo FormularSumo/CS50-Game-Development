@@ -40,6 +40,8 @@ function love.load()
     font80 = love.graphics.newFont(80)
     P1Score = 0
     P2Score = 0
+    P1Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
+    P2Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
 end
 
 
@@ -55,14 +57,26 @@ function love.draw()
         'center')               -- alignment mode, can be 'center', 'left', or 'right'
 
     love.graphics.setFont(font80)
-    love.graphics.printf(
-        P1Score,-200,25,WINDOW_WIDTH,'center')
-    love.graphics.rectangle('fill', 30, 90, Paddle_width, Paddle_height) -- Renders left rectangle
-    love.graphics.rectangle('fill', WINDOW_WIDTH - (30 + Paddle_width), WINDOW_HEIGHT - (90 + Paddle_height), Paddle_width, Paddle_height) -- Renders right rectangle
-    love.graphics.circle('fill', WINDOW_WIDTH / 2 , WINDOW_HEIGHT / 2, 10) -- Renders pong ball rectangle
+    love.graphics.printf(P1Score,-200,25,WINDOW_WIDTH,'center')
+    love.graphics.printf(P2Score,200,25,WINDOW_WIDTH,'center')
+    love.graphics.rectangle('fill', 30, P1Y, Paddle_width, Paddle_height) -- Renders left rectangle
+    love.graphics.rectangle('fill', WINDOW_WIDTH - (30 + Paddle_width), WINDOW_HEIGHT - (P2Y + Paddle_height), Paddle_width, Paddle_height) -- Renders right rectangle
+    love.graphics.circle('fill', WINDOW_WIDTH / 2 -5, WINDOW_HEIGHT / 2 -5, 10) -- Renders pong ball rectangle
 
 end
 
+function love.update(dt)
+    if love.keyboard.isDown('w') then
+        P1Y = P1Y - Paddle_speed * dt
+    elseif love.keyboard.isDown('s') then
+        P1Y = P1Y + Paddle_speed * dt
+    end
+    if love.keyboard.isDown('up') then
+        P2Y = P2Y + Paddle_speed * dt
+    elseif love.keyboard.isDown('down') then
+        P2Y = P2Y - Paddle_speed * dt
+    end
+end
 
 
 function love.keypressed(key)
