@@ -28,11 +28,12 @@ WINDOW_HEIGHT = 1080
 ]]
 function love.load()
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
-        fullscreen = false,
-        resizable = false,
+        resizable = true,
         vsync = true
     })
+    love.window.maximize()
 end
+
 
 --[[
     Called after update by LÖVE2D, used to draw anything to the screen, updated or otherwise.
