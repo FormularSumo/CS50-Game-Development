@@ -24,7 +24,8 @@
 
 WINDOW_WIDTH = 1920
 WINDOW_HEIGHT = 1080
-
+Paddle_width = 20
+Paddle_height = 80
 
     --Runs when the game first starts up, only once; used to initialize the game.
 
@@ -45,12 +46,18 @@ end
 
 function love.draw()
     love.graphics.printf(
-        'Pong!',          -- text to render
-        0,                      -- starting X (0 since we're going to center it based on width)
-        WINDOW_HEIGHT / 2 - 6,  -- starting Y (halfway down the screen)
+        'Pong',                 -- text to render
+        0,                      -- starting X (0 as it's going to be centered based on WINDOW_WIDTH)
+        40,                     -- starting Y
         WINDOW_WIDTH,           -- number of pixels to allign within
         'center')               -- alignment mode, can be 'center', 'left', or 'right'
+
+    love.graphics.rectangle('fill', 30, 90, Paddle_width, Paddle_height) -- Renders left rectangle
+    love.graphics.rectangle('fill', WINDOW_WIDTH - (30 + Paddle_width), WINDOW_HEIGHT - (90 + Paddle_height), Paddle_width, Paddle_height) -- Renders right rectangle
+    love.graphics.circle('fill', WINDOW_WIDTH / 2 , WINDOW_HEIGHT / 2, 8) -- Renders pong ball rectangle
+
 end
+
 
 function love.keypressed(key)
     --If escape key is pressed exit fullscreen
