@@ -31,7 +31,7 @@ Paddle_height = 80
 
 function love.load()
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
-        fullscreen = false,
+        fullscreen = true,
         resizable = true,
         vsync = true
     })
@@ -39,7 +39,6 @@ function love.load()
     font = love.graphics.newFont(50)
     love.graphics.setFont(font)
 end
-
 
 
     --Called after update by LÖVE2D, used to draw anything to the screen, updated or otherwise.
@@ -59,6 +58,7 @@ function love.draw()
 end
 
 
+
 function love.keypressed(key)
     --If escape key is pressed exit fullscreen
     if key == 'escape' then
@@ -73,4 +73,3 @@ function love.keypressed(key)
         end
     end
 end
-
