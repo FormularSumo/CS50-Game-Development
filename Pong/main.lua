@@ -90,6 +90,7 @@ function love.keypressed(key)
             love.window.setFullscreen(true)
         else
             love.window.setFullscreen(false)
+            love.window.maximize()
         end
     end
 end
