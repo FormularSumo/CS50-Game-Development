@@ -20,9 +20,21 @@
     modern systems.
 ]]
 
-
-
-
+function reset()
+    P1Score = 0
+    P2Score = 0
+    Paddle_width = 20 / Scaling
+    Paddle_height = 80 / Scaling
+    Paddle_speed = 450 / Scaling
+    Ball_radius = 10 / Scaling
+    P1Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
+    P2Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
+    BallX = WINDOW_WIDTH / 2
+    BallY = WINDOW_HEIGHT / 2
+    BallDX = math.random(2) == 1 and 100 or -100
+    BallDY = math.random(-50, 50)
+    gamestate = 'pause'
+end
     --Runs when the game first starts up, only once; used to initialize the game.
 
 function love.load()
@@ -40,14 +52,7 @@ function love.load()
     Current_scaling = Scaling
     font50 = love.graphics.newFont(50)
     font80 = love.graphics.newFont(80)
-    P1Score = 0
-    P2Score = 0
-    Paddle_width = 20 / Scaling
-    Paddle_height = 80 / Scaling
-    Paddle_speed = 450 / Scaling
-    Ball_radius = 10 / Scaling
-    P1Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
-    P2Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
+    reset()
 end
 
 
@@ -58,15 +63,19 @@ function love.update(dt)
     Scaling = (Scaling1 + Scaling2) / 2
     --Controls paddel movement
     --dt stands for delta time and keeps this consistent across different frame rates
-    if love.keyboard.isDown('w') then
-        P1Y = math.max(0,P1Y - Paddle_speed * dt)
-    elseif love.keyboard.isDown('s') then
-        P1Y = math.min(WINDOW_HEIGHT - Paddle_height,P1Y + Paddle_speed * dt)
-    end
-    if love.keyboard.isDown('up') then
-        P2Y = math.max(0,P2Y - Paddle_speed * dt)
-    elseif love.keyboard.isDown('down') then
-        P2Y = math.min(WINDOW_HEIGHT - Paddle_height,P2Y + Paddle_speed * dt)
+    if gamestate == 'play' then
+        if love.keyboard.isDown('w') then
+            P1Y = math.max(0,P1Y - Paddle_speed * dt)
+        elseif love.keyboard.isDown('s') then
+            P1Y = math.min(WINDOW_HEIGHT - Paddle_height,P1Y + Paddle_speed * dt)
+        end
+        if love.keyboard.isDown('up') then
+            P2Y = math.max(0,P2Y - Paddle_speed * dt)
+        elseif love.keyboard.isDown('down') then
+            P2Y = math.min(WINDOW_HEIGHT - Paddle_height,P2Y + Paddle_speed * dt)
+        end
+        BallX = BallX + BallDX * dt
+        BallY = BallY + BallDY * dt
     end
 
     if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
@@ -76,6 +85,8 @@ function love.update(dt)
             P1Y = P1Y / Scaling_change
             P2Y = P2Y / Scaling_change
         end
+        BallX = BallX / Scaling_change
+        BallY = BallY / Scaling_change
         Paddle_width = 20 / Scaling
         Paddle_height = 80 / Scaling
         Paddle_speed = 450 / Scaling
@@ -102,6 +113,18 @@ function love.keypressed(key)
             love.window.maximize()
         end
     end
+    --Play/pause
+    if key == 'space' then
+        if gamestate == 'pause' then
+            gamestate = 'play'
+        else
+            gamestate = 'pause'
+        end
+    end
+
+    if key == 'f5' then 
+        reset()
+    end
 end
 
 
@@ -123,5 +146,12 @@ function love.draw()
     love.graphics.printf(P2Score,400 / Scaling2,25,WINDOW_WIDTH,'center')
     love.graphics.rectangle('fill', 30, P1Y, Paddle_width, Paddle_height) -- Renders left paddle
     love.graphics.rectangle('fill', WINDOW_WIDTH - (30 + Paddle_width), P2Y, Paddle_width, Paddle_height) -- Renders right paddle
-    love.graphics.circle('fill', WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, Ball_radius) -- Renders pong ball
+    love.graphics.circle('fill', BallX, BallY, Ball_radius) -- Renders pong ball
+
+    if gamestate == 'pause' then
+        love.graphics.printf('Paused',0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
+        love.graphics.setFont(font50)
+        love.graphics.printf('Press space to pause/unpause',0,WINDOW_HEIGHT / 2 + 130 / Scaling1,WINDOW_WIDTH ,'center')
+        love.graphics.printf('Press F5 to reset game',0,WINDOW_HEIGHT / 2 + 200 / Scaling1,WINDOW_WIDTH ,'center')
+    end
 end
