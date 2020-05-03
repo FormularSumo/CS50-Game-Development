@@ -52,14 +52,14 @@ function love.update(dt)
     --Controls paddel movement
     --dt stands for delta time and keeps this consistent across different frame rates
     if love.keyboard.isDown('w') then
-        P1Y = P1Y - Paddle_speed * dt
+        P1Y = math.max(0,P1Y - Paddle_speed * dt)
     elseif love.keyboard.isDown('s') then
-        P1Y = P1Y + Paddle_speed * dt
+        P1Y = math.min(WINDOW_HEIGHT - Paddle_height,P1Y + Paddle_speed * dt)
     end
     if love.keyboard.isDown('up') then
-        P2Y = P2Y + Paddle_speed * dt
+        P2Y = math.max(0,P2Y - Paddle_speed * dt)
     elseif love.keyboard.isDown('down') then
-        P2Y = P2Y - Paddle_speed * dt
+        P2Y = math.min(WINDOW_HEIGHT - Paddle_height,P2Y + Paddle_speed * dt)
     end
 end
 
@@ -87,7 +87,7 @@ end
 function love.draw()
     love.graphics.setFont(font50)
     --love.graphics.printf(WINDOW_WIDTH .. ' x '.. WINDOW_HEIGHT,0,WINDOW_HEIGHT / 2 - 25,WINDOW_WIDTH,'center')
-    --love.graphics.printf('x',0,WINDOW_HEIGHT / 2 - 25,WINDOW_WIDTH,'center')
+    --love.graphics.printf(P1Y,0,WINDOW_HEIGHT / 1.5 - 25,WINDOW_WIDTH,'center')
     love.graphics.printf(
         'Pong',                 -- text to render
         0,                      -- starting X (0 as it's going to be centered based on WINDOW_WIDTH)
