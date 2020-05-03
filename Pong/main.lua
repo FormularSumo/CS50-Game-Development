@@ -39,24 +39,28 @@ end
     --Runs when the game first starts up, only once; used to initialize the game.
 
 function love.load()
+    love.window.setTitle('Pong')
     love.window.setMode(0, 0, {
         fullscreen = true,
         resizable = true,
         vsync = true
     })
     love.window.maximize()
-    math.randomseed(os.time())
+    math.randomseed(os.time()) --Not sure what this is used for, not needed
     WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
     Current_window_width, Current_window_height = love.graphics.getDimensions()
     Scaling1 = 1080 / WINDOW_HEIGHT
     Scaling2 = 1920 / WINDOW_WIDTH
     Scaling = (Scaling1 + Scaling2) / 2
     Current_scaling = Scaling
+
     font50 = love.graphics.newFont(50)
     font80 = love.graphics.newFont(80)
+
     ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 10 / Scaling)
     player1 = Paddle('left')
     player2 = Paddle('right')
+
     reset()
 end
 
@@ -140,6 +144,7 @@ end
 --Called after update by LÖVE2D, used to draw anything to the screen, updated or otherwise.
 
 function love.draw()
+    love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setFont(font50)
     --love.graphics.printf(WINDOW_WIDTH .. ' x '.. WINDOW_HEIGHT,0,WINDOW_HEIGHT / 2 - 25,WINDOW_WIDTH,'center')
     --love.graphics.printf(Scaling,0,WINDOW_HEIGHT / 1.5 - 25,WINDOW_WIDTH,'center')
@@ -162,4 +167,7 @@ function love.draw()
         love.graphics.printf('Press space to pause/unpause',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
         love.graphics.printf('Press F5 to reset game',0,WINDOW_HEIGHT / 2 + 200,WINDOW_WIDTH ,'center')
     end
+    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.setFont(font50)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
