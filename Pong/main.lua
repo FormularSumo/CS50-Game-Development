@@ -2,8 +2,6 @@
     GD50 2018
     Pong Remake
 
-    pong-0
-    "The Day-0 Update"
 
     -- Main Program --
 
@@ -31,8 +29,8 @@ function reset()
     P2Y = WINDOW_HEIGHT / 2 - Paddle_height / 2
     BallX = WINDOW_WIDTH / 2
     BallY = WINDOW_HEIGHT / 2
-    BallDX = math.random(2) == 1 and 100 or -100
-    BallDY = math.random(-50, 50)
+    BallDX = math.random(2) == 1 and 350 or -350
+    BallDY = math.random(-300, 300)
     gamestate = 'pause'
 end
     --Runs when the game first starts up, only once; used to initialize the game.
@@ -44,6 +42,7 @@ function love.load()
         vsync = true
     })
     love.window.maximize()
+    math.randomseed(os.time())
     WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
     Current_window_width, Current_window_height = love.graphics.getDimensions()
     Scaling1 = 1080 / WINDOW_HEIGHT
