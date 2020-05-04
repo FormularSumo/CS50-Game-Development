@@ -15,6 +15,21 @@ function Ball:reset() -- Resets ball position and speed and randomises direction
     self.dy = math.random(-300, 300)
 end
 
+function Ball:collides(paddle)
+    if self.x - self.radius / 2 > paddle.x + paddle.width or paddle.x > self.x + self.radius / 2 then
+        return false
+    end
+
+    -- then check to see if the bottom edge of either is higher than the top
+    -- edge of the other
+    if self.y - self.radius / 2 > paddle.y + paddle.height or paddle.y > self.y + self.radius / 2 then
+        return false
+    end 
+
+    -- if the above aren't true, they're overlapping
+    return true
+end
+
 function Ball:update(dt) -- Updates ball postion
     self.x = self.x + self.dx * dt
     self.y = self.y + self.dy * dt

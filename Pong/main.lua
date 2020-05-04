@@ -73,6 +73,28 @@ function love.update(dt)
     --Controls paddel movement
     --dt stands for delta time and keeps this consistent across different frame rates
     if gamestate == 'play' then
+        if ball:collides(player1) then
+            ball.dx = ball.dx * -1.03 --Reverses x velocity, increasing it slightly
+            ball.x = player1.x + player1.width + ball.radius / 2--Makes sure ball is not collding with paddle after it changes direction
+
+            if ball.dy < 0 then
+                ball.dy = math.random(30,400)
+            else
+                ball.dy = -math.random(30,400)
+            end
+        end
+
+        if ball:collides(player2) then
+            ball.dx = ball.dx * -1.05
+            ball.x = player2.x - ball.radius / 2
+
+            if ball.dy < 0 then
+                ball.dy = math.random(10,150)
+            else
+                ball.dy = -math.random(10,150)
+            end
+        end
+
         if love.keyboard.isDown('w') then
             player1.dy = - Paddle_speed
         elseif love.keyboard.isDown('s') then
