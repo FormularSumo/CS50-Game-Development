@@ -126,6 +126,16 @@ function love.update(dt)
         player1:update(dt)
         player2:update(dt)
     end
+    
+    if ball.x < 0 then
+        P2Score = P2Score + 1
+        ball:reset()
+    end
+
+    if ball.x > WINDOW_WIDTH then
+        P1Score = P1Score + 1
+        ball:reset()
+    end
 
     if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
         Scaling_change = Scaling / Current_scaling
