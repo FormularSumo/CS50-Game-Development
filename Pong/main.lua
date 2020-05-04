@@ -140,6 +140,8 @@ function love.update(dt)
         ball.radius = 10 / Scaling
         Current_window_width = WINDOW_WIDTH
         Current_window_height = WINDOW_HEIGHT
+        ball.dx = ball.dx / Scaling_change
+        ball.dy = ball.dy / Scaling_change
     end  
     
 end
