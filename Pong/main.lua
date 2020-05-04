@@ -95,6 +95,18 @@ function love.update(dt)
             end
         end
 
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+            ball.dx = ball.dx * 1.03
+        end
+
+        if ball.y >= WINDOW_HEIGHT - ball.radius / 2 then
+            ball.y = WINDOW_HEIGHT - ball.radius / 2
+            ball.dy = -ball.dy
+            ball.dx = ball.dx * 1.03
+        end
+
         if love.keyboard.isDown('w') then
             player1.dy = - Paddle_speed
         elseif love.keyboard.isDown('s') then
