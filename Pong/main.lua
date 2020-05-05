@@ -1,21 +1,16 @@
 --[[
-    GD50 2018
+    GD50 Computer Science
     Pong Remake
 
 
     -- Main Program --
 
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
+    Author: Formularsumo, based off Colton Ogden's version - cogden@cs50.harvard.edu
 
     Originally programmed by Atari in 1972. Features two
     paddles, controlled by players, with the goal of getting
     the ball past your opponent's edge. First to 10 points wins.
 
-    This version is built to more closely resemble the NES than
-    the original Pong machines or the Atari 2600 in terms of
-    resolution, though in widescreen (16:9) so it looks nicer on 
-    modern systems.
     
     The "Class" library that's being used allows us to represent anything in
     our game as code, rather than keeping track of many disparate variables and
@@ -33,8 +28,9 @@ function reset()
     P1Score = 0
     P2Score = 0
     Paddle_speed = 450 / Scaling
+    Serving_player = math.random(1,2)
     ball:reset()
-    gamestate = 'pause'
+    gamestate = 'serve'
 end
     --Runs when the game first starts up, only once; used to initialize the game.
 
@@ -70,9 +66,8 @@ function love.update(dt)
     Scaling1 = 1080 / WINDOW_HEIGHT
     Scaling2 = 1920 / WINDOW_WIDTH
     Scaling = (Scaling1 + Scaling2) / 2
-    --Controls paddel movement
-    --dt stands for delta time and keeps this consistent across different frame rates
-    if gamestate == 'play' then
+
+    if gamestate == 'play' or 'serve' then
         if ball:collides(player1) then
             ball.dx = ball.dx * -1.03 --Reverses x velocity, increasing it slightly
             ball.x = player1.x + player1.width + ball.radius / 2--Makes sure ball is not collding with paddle after it changes direction
@@ -95,6 +90,7 @@ function love.update(dt)
             end
         end
 
+        --Invert Y and speed up X if touching ceiling or ground
         if ball.y <= 0 then
             ball.y = 0
             ball.dy = -ball.dy
@@ -107,6 +103,8 @@ function love.update(dt)
             ball.dx = ball.dx * 1.03
         end
 
+        --Controls paddel movement
+        --dt stands for delta time and keeps movement consistent across different frame rates
         if love.keyboard.isDown('w') then
             player1.dy = - Paddle_speed
         elseif love.keyboard.isDown('s') then
@@ -122,17 +120,25 @@ function love.update(dt)
         else 
             player2.dy = 0
         end
-        ball:update(dt)
         player1:update(dt)
         player2:update(dt)
     end
 
+    if gamestate == 'play' then
+        ball:update(dt)
+    end
+
+    --If offscreen change points and reset ball location
     if ball.x + ball.radius / 2 < 0 then
+        Serving_player = 1
+        gamestate = 'serve'
         P2Score = P2Score + 1
         ball:reset()
     end
 
     if ball.x - ball.radius / 2 > WINDOW_WIDTH then
+        Serving_player = 2
+        gamestate = 'serve'
         P1Score = P1Score + 1
         ball:reset()
     end
@@ -174,7 +180,7 @@ function love.keypressed(key)
     end
     --Space plays/pauses
     if key == 'space' then
-        if gamestate == 'pause' then
+        if gamestate == 'pause' or gamestate == 'serve' then
             gamestate = 'play'
         else
             gamestate = 'pause'
@@ -192,7 +198,6 @@ end
 function love.draw()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setFont(font50)
-    --love.graphics.printf(WINDOW_WIDTH .. ' x '.. WINDOW_HEIGHT,0,WINDOW_HEIGHT / 2 - 25,WINDOW_WIDTH,'center')
     --love.graphics.printf(Scaling,0,WINDOW_HEIGHT / 1.5 - 25,WINDOW_WIDTH,'center')
     love.graphics.printf(
         'Pong',                 -- text to render
@@ -207,13 +212,20 @@ function love.draw()
     player1:render()
     player2:render()
     ball:render()
+
     if gamestate == 'pause' then
         love.graphics.printf('Paused',0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
-        love.graphics.setFont(font50)
-        love.graphics.printf('Press space to pause/unpause',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
-        love.graphics.printf('Press F5 to reset game',0,WINDOW_HEIGHT / 2 + 200,WINDOW_WIDTH ,'center')
+    elseif gamestate == 'serve' then
+        love.graphics.printf('Player ' .. tostring(Serving_player) .. "'s serve",0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
     end
-    love.graphics.setColor(0, 255, 0, 255)
     love.graphics.setFont(font50)
+
+    if gamestate == 'pause' or gamestate == 'serve' then
+        love.graphics.printf('Press space to play/pause',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
+        love.graphics.printf('Press F5 to reset',0,WINDOW_HEIGHT / 2 + 200,WINDOW_WIDTH ,'center')
+    end
+
+    love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+    --love.graphics.print(gamestate,50,50)
 end

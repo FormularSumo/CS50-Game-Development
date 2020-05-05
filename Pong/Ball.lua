@@ -11,7 +11,7 @@ end
 function Ball:reset() -- Resets ball position and speed and randomises direction
     self.x = WINDOW_WIDTH / 2
     self.y = WINDOW_HEIGHT / 2
-    self.dx = (math.random(2) == 1 and 350 or -350) / Scaling
+    self.dx = (Serving_player == 1 and 350 or -350) / Scaling
     self.dy = math.random(-300, 300) / Scaling
 end
 
