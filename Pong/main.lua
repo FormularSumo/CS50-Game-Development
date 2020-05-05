@@ -67,7 +67,7 @@ function love.update(dt)
     Scaling2 = 1920 / WINDOW_WIDTH
     Scaling = (Scaling1 + Scaling2) / 2
 
-    if gamestate == 'play' or 'serve' then
+    if gamestate == 'play' or gamestate == 'serve' then
         if ball:collides(player1) then
             ball.dx = ball.dx * -1.03 --Reverses x velocity, increasing it slightly
             ball.x = player1.x + player1.width + ball.radius / 2--Makes sure ball is not collding with paddle after it changes direction
@@ -228,4 +228,6 @@ function love.draw()
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
     --love.graphics.print(gamestate,50,50)
+    love.graphics.print(player2.y,50,50)
+
 end

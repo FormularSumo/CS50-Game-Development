@@ -20,7 +20,7 @@ function Paddle:reset()
 end
 
 function Paddle:update(dt)
-    if dt < 0 then
+    if self.dy < 0 then
         self.y = math.max(0,self.y + self.dy * dt)
     else
         self.y = math.min(WINDOW_HEIGHT - self.height,self.y + self.dy * dt)
