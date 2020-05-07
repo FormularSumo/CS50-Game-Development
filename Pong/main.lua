@@ -130,17 +130,29 @@ function love.update(dt)
 
     --If offscreen change points and reset ball location
     if ball.x + ball.radius / 2 < 0 then
-        Serving_player = 1
-        gamestate = 'serve'
         P2Score = P2Score + 1
-        ball:reset()
+        if P2Score == 5 then
+            winner = 2
+            gamestate = 'done'
+            ball:reset()
+        else
+            Serving_player = 1
+            gamestate = 'serve'
+            ball:reset()
+        end
     end
 
     if ball.x - ball.radius / 2 > WINDOW_WIDTH then
-        Serving_player = 2
-        gamestate = 'serve'
         P1Score = P1Score + 1
-        ball:reset()
+        if P1Score == 5 then
+            winner = 1
+            gamestate = 'done'
+            ball:reset()
+        else
+            Serving_player = 2
+            gamestate = 'serve'
+            ball:reset()
+        end
     end
 
     if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
@@ -182,8 +194,11 @@ function love.keypressed(key)
     if key == 'space' then
         if gamestate == 'pause' or gamestate == 'serve' then
             gamestate = 'play'
-        else
+        elseif gamestate == 'play' then
             gamestate = 'pause'
+        else
+            reset()
+            gamestate = 'play'
         end
     end
     --F5 exits program
@@ -217,6 +232,8 @@ function love.draw()
         love.graphics.printf('Paused',0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
     elseif gamestate == 'serve' then
         love.graphics.printf('Player ' .. tostring(Serving_player) .. "'s serve",0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
+    elseif gamestate == 'done' then
+        love.graphics.printf('Player ' .. tostring(winner) .. " has won",0,WINDOW_HEIGHT / 2 + 20 * Scaling1,WINDOW_WIDTH ,'center')
     end
     love.graphics.setFont(font50)
 
@@ -225,9 +242,13 @@ function love.draw()
         love.graphics.printf('Press F5 to reset',0,WINDOW_HEIGHT / 2 + 200,WINDOW_WIDTH ,'center')
     end
 
+    if gamestate == 'done' then
+        love.graphics.printf('Press space to play again',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
+    end
+
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
-    --love.graphics.print(gamestate,50,50)
-    love.graphics.print(player2.y,50,50)
+    love.graphics.print(gamestate,50,50)
+    --love.graphics.print(player2.y,50,50)
 
 end
