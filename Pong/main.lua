@@ -198,7 +198,7 @@ function love.keypressed(key)
             gamestate = 'pause'
         else
             reset()
-            gamestate = 'play'
+            gamestate = 'serve'
         end
     end
     --F5 exits program
@@ -248,7 +248,7 @@ function love.draw()
 
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
-    love.graphics.print(gamestate,50,50)
+    --love.graphics.print(gamestate,50,50)
     --love.graphics.print(player2.y,50,50)
 
 end
