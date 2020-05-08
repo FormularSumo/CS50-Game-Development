@@ -43,15 +43,23 @@ function love.load()
     })
     love.window.maximize()
     math.randomseed(os.time()) --Not sure what this is used for, not needed
-    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
-    Current_window_width, Current_window_height = love.graphics.getDimensions()
+
+    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions() --As program is already fullscreen this finds out the resolution of the screen
+    Current_window_width, Current_window_height = love.graphics.getDimensions() --This is used later on to keep track of when the window changes size
     Scaling1 = 1080 / WINDOW_HEIGHT
     Scaling2 = 1920 / WINDOW_WIDTH
     Scaling = (Scaling1 + Scaling2) / 2
-    Current_scaling = Scaling
+    Current_scaling = Scaling --Allows program to scale to window size
 
     font50 = love.graphics.newFont(50)
     font80 = love.graphics.newFont(80)
+
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static'),
+    }
+    love.audio.setVolume(0.5)
 
     ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 10 / Scaling)
     player1 = Paddle('left')
@@ -77,6 +85,7 @@ function love.update(dt)
             else
                 ball.dy = -math.random(30,400)
             end
+            sounds['paddle_hit']:play()
         end
 
         if ball:collides(player2) then
@@ -88,6 +97,7 @@ function love.update(dt)
             else
                 ball.dy = -math.random(10,150)
             end
+            sounds['paddle_hit']:play()
         end
 
         --Invert Y and speed up X if touching ceiling or ground
@@ -95,12 +105,14 @@ function love.update(dt)
             ball.y = 0
             ball.dy = -ball.dy
             ball.dx = ball.dx * 1.03
+            sounds['wall_hit']:play()
         end
 
         if ball.y >= WINDOW_HEIGHT - ball.radius / 2 then
             ball.y = WINDOW_HEIGHT - ball.radius / 2
             ball.dy = -ball.dy
             ball.dx = ball.dx * 1.03
+            sounds['wall_hit']:play()
         end
 
         --Controls paddel movement
@@ -140,6 +152,7 @@ function love.update(dt)
             gamestate = 'serve'
             ball:reset()
         end
+        sounds['score']:play()
     end
 
     if ball.x - ball.radius / 2 > WINDOW_WIDTH then
@@ -153,6 +166,7 @@ function love.update(dt)
             gamestate = 'serve'
             ball:reset()
         end
+        sounds['score']:play()
     end
 
     if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
