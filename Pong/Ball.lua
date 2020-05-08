@@ -4,6 +4,7 @@ function Ball:init(x, y, radius) -- Creates ball
     self.x = x
     self.y = y
     self.radius = radius
+    self.original_radius = radius
     self.dy = math.random(2) == 1 and -100 or 100
     self.dx = math.random(-50, 50)
 end
@@ -36,5 +37,6 @@ function Ball:update(dt) -- Updates ball postion
 end
 
 function Ball:render() -- Renders ball
+    self.radius = self.original_radius / Scaling
     love.graphics.circle('fill', self.x, self.y, self.radius)
 end

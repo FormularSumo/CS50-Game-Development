@@ -59,7 +59,7 @@ function love.load()
         ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
         ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static'),
     }
-    love.audio.setVolume(0.5)
+    love.audio.setVolume(0.4)
 
     ball = Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 10 / Scaling)
     player1 = Paddle('left')
@@ -74,6 +74,22 @@ function love.update(dt)
     Scaling1 = 1080 / WINDOW_HEIGHT
     Scaling2 = 1920 / WINDOW_WIDTH
     Scaling = (Scaling1 + Scaling2) / 2
+
+    if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
+        Scaling_change = Scaling / Current_scaling
+        Current_scaling = Scaling
+        if Current_window_height ~= WINDOW_HEIGHT then
+            player1.y = player1.y / Scaling_change
+            player2.y = player2.y / Scaling_change
+        end
+        ball.x = ball.x / Scaling_change
+        ball.y = ball.y / Scaling_change
+        Paddle_speed = 450 / Scaling
+        Current_window_width = WINDOW_WIDTH
+        Current_window_height = WINDOW_HEIGHT
+        ball.dx = ball.dx / Scaling_change
+        ball.dy = ball.dy / Scaling_change
+    end  
 
     if gamestate == 'play' or gamestate == 'serve' then
         if ball:collides(player1) then
@@ -168,23 +184,6 @@ function love.update(dt)
         end
         sounds['score']:play()
     end
-
-    if Current_window_width ~= WINDOW_WIDTH or Current_window_height ~= WINDOW_HEIGHT then
-        Scaling_change = Scaling / Current_scaling
-        Current_scaling = Scaling
-        if Current_window_height ~= WINDOW_HEIGHT then
-            player1.y = player1.y / Scaling_change
-            player2.y = player2.y / Scaling_change
-        end
-        ball.x = ball.x / Scaling_change
-        ball.y = ball.y / Scaling_change
-        Paddle_speed = 450 / Scaling
-        ball.radius = 10 / Scaling
-        Current_window_width = WINDOW_WIDTH
-        Current_window_height = WINDOW_HEIGHT
-        ball.dx = ball.dx / Scaling_change
-        ball.dy = ball.dy / Scaling_change
-    end  
     
 end
 
