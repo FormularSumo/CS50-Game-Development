@@ -30,6 +30,8 @@ function reset()
     Paddle_speed = 450 / Scaling
     Serving_player = math.random(1,2)
     ball:reset()
+    player1:reset()
+    player2:reset()
     gamestate = 'serve'
 end
     --Runs when the game first starts up, only once; used to initialize the game.
@@ -131,23 +133,6 @@ function love.update(dt)
             sounds['wall_hit']:play()
         end
 
-        --Controls paddel movement
-        --dt stands for delta time and keeps movement consistent across different frame rates
-        if love.keyboard.isDown('w') then
-            player1.dy = - Paddle_speed
-        elseif love.keyboard.isDown('s') then
-            player1.dy = Paddle_speed
-        else 
-            player1.dy = 0
-        end
-
-        if love.keyboard.isDown('up') then
-            player2.dy = - Paddle_speed
-        elseif love.keyboard.isDown('down') then
-            player2.dy = Paddle_speed
-        else 
-            player2.dy = 0
-        end
         player1:update(dt)
         player2:update(dt)
     end
@@ -184,7 +169,9 @@ function love.update(dt)
         end
         sounds['score']:play()
     end
-    
+    if gamestate == 'serve' and ((Serving_player == 1 and player1.ai == true) or (Serving_player == 2 and player2.ai == true)) then
+        gamestate = 'play'
+    end
 end
 
 
@@ -217,6 +204,24 @@ function love.keypressed(key)
     --F5 exits program
     if key == 'f5' then 
         reset()
+    end
+    --1/2 toggles player1/2.ai
+    if gamestate == 'serve' or gamestate == 'pause' then
+        if key == '1' then
+            if player1.ai == 'human' then
+                player1.ai = 'ai'
+            else
+                player1.ai = 'human'
+            end
+        end
+        
+        if key == '2' then
+            if player2.ai == 'human' then
+                player2.ai = 'ai'
+            else
+                player2.ai = 'human'
+            end
+        end
     end
 end
 
@@ -251,12 +256,15 @@ function love.draw()
     love.graphics.setFont(font50)
 
     if gamestate == 'pause' or gamestate == 'serve' then
-        love.graphics.printf('Press space to play/pause',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
-        love.graphics.printf('Press F5 to reset',0,WINDOW_HEIGHT / 2 + 200,WINDOW_WIDTH ,'center')
+        love.graphics.printf('Space = play/pause',0,WINDOW_HEIGHT / 2 + 170,WINDOW_WIDTH ,'center')
+        love.graphics.printf('F5 = reset',0,WINDOW_HEIGHT / 2 + 230,WINDOW_WIDTH ,'center')
+        love.graphics.printf("1/2 = toggle AI",0,WINDOW_HEIGHT / 2 + 300,WINDOW_WIDTH ,'center')
+        love.graphics.print(player1.ai,player1.x + player1.width + 50,player1.y + 12.5)
+        love.graphics.printf(player2.ai,0,player2.y + 12.5,WINDOW_WIDTH - player2.width - 80,'right')
     end
 
     if gamestate == 'done' then
-        love.graphics.printf('Press space to play again',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH ,'center')
+        love.graphics.printf('Press space to play again',0,WINDOW_HEIGHT / 2 + 130,WINDOW_WIDTH,'center')
     end
 
     love.graphics.setColor(0, 255, 0, 255)
