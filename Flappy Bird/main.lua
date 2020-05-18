@@ -43,6 +43,7 @@ function love.keypressed(key)
     --Escape exits fullscreen
     if key == 'escape' then
         love.window.setFullscreen(false)
+        love.window.maximize()
     end
     --F11 toggles between fullscreen and maximised
     if key == 'f11' then
