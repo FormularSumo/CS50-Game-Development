@@ -43,7 +43,6 @@ function love.load()
         resizable = true,
         vsync = true
     })
-    love.window.maximize()
     math.randomseed(os.time()) --Not sure what this is used for, not needed
 
     WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions() --As program is already fullscreen this finds out the resolution of the screen
