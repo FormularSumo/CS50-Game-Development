@@ -8,4 +8,4 @@ F5 resets game.
 Space plays/pauses.
 Added text when paused / done in centre of screen.
 Ball goes resets to middle of screen after someone wins.
-Losing player doesn'e necesarily serve next game (50/50)
+Added a toggleable A.I.
