@@ -22,11 +22,15 @@ VIRTUAL_HEIGHT = 288
 
 -- images we load into memory from files to later draw onto the screen
 local background = love.graphics.newImage('background.png')
+local background_scroll = 0
 local ground = love.graphics.newImage('ground.png')
+local ground_scroll = 0
 
 function love.load()
     -- app window title
     love.window.setTitle('Flappy Bird')
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+
 
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 0, 0, {
@@ -78,10 +82,10 @@ function love.draw()
     push:start()
 
     -- draw the background starting at top left (0, 0)
-    love.graphics.draw(background, 0, 0)
+    love.graphics.draw(background, background_scroll, 0)
 
     -- draw the ground on top of the background, toward the bottom of the screen
-    love.graphics.draw(ground, 0, VIRTUAL_HEIGHT - 16)
+    love.graphics.draw(ground, ground_scroll, VIRTUAL_HEIGHT - 16)
     
     push:finish()
 end
