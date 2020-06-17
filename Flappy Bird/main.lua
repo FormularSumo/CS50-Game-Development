@@ -23,8 +23,14 @@ VIRTUAL_HEIGHT = 288
 -- images we load into memory from files to later draw onto the screen
 local background = love.graphics.newImage('background.png')
 local background_scroll = 0
+
 local ground = love.graphics.newImage('ground.png')
 local ground_scroll = 0
+
+local BACKGROUND_SCROLL_SPEED = 20
+local GROUND_SCROLL_SPEED = 60
+
+local BACKGROUND_LOOPING_POINT = 413
 
 function love.load()
     -- app window title
@@ -78,14 +84,20 @@ function love.resize(w, h)
     push:resize(w, h)
 end
 
+function love.update(dt)
+    background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
+
+    ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
+end
+
 function love.draw()
     push:start()
 
     -- draw the background starting at top left (0, 0)
-    love.graphics.draw(background, background_scroll, 0)
+    love.graphics.draw(background, -background_scroll, 0)
 
     -- draw the ground on top of the background, toward the bottom of the screen
-    love.graphics.draw(ground, ground_scroll, VIRTUAL_HEIGHT - 16)
+    love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 16)
     
     push:finish()
 end
