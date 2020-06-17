@@ -16,6 +16,12 @@
 -- virtual resolution handling library
 push = require 'push'
 
+-- classic OOP class library
+Class = require 'class'
+
+-- bird class from Bird.lua
+require 'Bird'
+
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
@@ -31,6 +37,8 @@ local BACKGROUND_SCROLL_SPEED = 20
 local GROUND_SCROLL_SPEED = 60
 
 local BACKGROUND_LOOPING_POINT = 413
+
+local bird = Bird()
 
 function love.load()
     -- app window title
@@ -88,6 +96,8 @@ function love.update(dt)
     background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
 
     ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
+
+    bird:update(dt)
 end
 
 function love.draw()
@@ -99,5 +109,7 @@ function love.draw()
     -- draw the ground on top of the background, toward the bottom of the screen
     love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 16)
     
+    bird:render()
+
     push:finish()
 end
