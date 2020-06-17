@@ -201,7 +201,7 @@ function love.keypressed(key)
             gamestate = 'serve'
         end
     end
-    --F5 exits program
+    --F5 resets program
     if key == 'f5' then 
         reset()
     end
