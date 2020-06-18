@@ -22,6 +22,9 @@ Class = require 'class'
 -- bird class from Bird.lua
 require 'Bird'
 
+-- Pipe.lua
+require 'Pipe'
+
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
@@ -45,6 +48,7 @@ function love.load()
     love.window.setTitle('Flappy Bird')
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
+    math.randomseed(os.time()) --Randomises randomiser each time program is run. 
 
     -- initialize our virtual resolution
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, 0, 0, {

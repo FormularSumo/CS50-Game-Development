@@ -43,7 +43,7 @@ function love.load()
         resizable = true,
         vsync = true
     })
-    math.randomseed(os.time()) --Not sure what this is used for, not needed
+    math.randomseed(os.time()) --Randomises randomiser each time program is run. 
 
     WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions() --As program is already fullscreen this finds out the resolution of the screen
     Current_window_width, Current_window_height = love.graphics.getDimensions() --This is used later on to keep track of when the window changes size
