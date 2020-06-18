@@ -52,11 +52,17 @@ function love.load()
         fullscreen = true,
         resizable = true
     })
+
+    love.keyboard.keysPressed = {}
 end
 
-
+function love.resize(w, h)
+    push:resize(w, h)
+end
 
 function love.keypressed(key)
+    love.keyboard.keysPressed[key] = true
+
     --Escape exits fullscreen
     if key == 'escape' then
         love.window.setFullscreen(false)
@@ -88,9 +94,10 @@ function love.keypressed(key)
     -- end
 end
 
-function love.resize(w, h)
-    push:resize(w, h)
+function love.keyboard.wasPressed(key)
+    return love.keyboard.keysPressed[key] 
 end
+
 
 function love.update(dt)
     background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
@@ -98,6 +105,8 @@ function love.update(dt)
     ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
 
     bird:update(dt)
+
+    love.keyboard.keysPressed = {}
 end
 
 function love.draw()
@@ -107,6 +116,7 @@ function love.draw()
     love.graphics.draw(background, -background_scroll, 0)
 
     -- draw the ground on top of the background, toward the bottom of the screen
+    -- at its negative looping point
     love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 16)
     
     bird:render()
