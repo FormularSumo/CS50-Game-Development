@@ -43,6 +43,10 @@ local BACKGROUND_LOOPING_POINT = 413
 
 local bird = Bird()
 
+local pipes = {}
+
+local spawn_timer = 0
+
 function love.load()
     -- app window title
     love.window.setTitle('Flappy Bird')
@@ -108,7 +112,22 @@ function love.update(dt)
 
     ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
 
+    spawn_timer = spawn_timer + dt
+
+    if spawn_timer > 2 then
+        table.insert(pipes, Pipe())
+        spawn_timer = 0
+    end
+
     bird:update(dt)
+
+    for k, pipe in pairs(pipes) do
+        pipe:update(dt)
+
+        if pipe.x < 0 + pipe.x then
+            table.remove(pipes, k)
+        end
+    end
 
     love.keyboard.keysPressed = {}
 end
@@ -119,6 +138,9 @@ function love.draw()
     -- draw the background starting at top left (0, 0)
     love.graphics.draw(background, -background_scroll, 0)
 
+    for k, pipe in pairs(pipes) do 
+        pipe:render()
+    end
     -- draw the ground on top of the background, toward the bottom of the screen
     -- at its negative looping point
     love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 16)
