@@ -25,6 +25,8 @@ require 'Bird'
 -- Pipe.lua
 require 'Pipe'
 
+require 'PipePair'
+
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
 VIRTUAL_HEIGHT = 288
@@ -39,13 +41,18 @@ local ground_scroll = 0
 local BACKGROUND_SCROLL_SPEED = 20
 local GROUND_SCROLL_SPEED = 60
 
+-- point at which we should loop our ground back to X 0
+local GROUND_LOOPING_POINT = 514
+
 local BACKGROUND_LOOPING_POINT = 413
 
 local bird = Bird()
 
-local pipes = {}
+local pipePairs = {}
 
 local spawn_timer = 0
+
+local lastY = -PIPE_HEIGHT + math.random(80) + 20
 
 function love.load()
     -- app window title
@@ -110,22 +117,37 @@ end
 function love.update(dt)
     background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
 
-    ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH
+    ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH % GROUND_LOOPING_POINT
 
     spawn_timer = spawn_timer + dt
 
+    -- spawn a new PipePair if the timer is past 2 seconds
     if spawn_timer > 2 then
-        table.insert(pipes, Pipe())
+        -- modify the last Y coordinate we placed so pipe gaps aren't too far apart
+        -- no higher than 10 pixels below the top edge of the screen,
+        -- and no lower than a gap length (90 pixels) from the bottom
+        local y = math.max(-PIPE_HEIGHT + 10, 
+            math.min(lastY + math.random(-20, 20), VIRTUAL_HEIGHT - GAP_HEIGHT - PIPE_HEIGHT))
+        lastY = y
+        
+        table.insert(pipePairs, PipePair(y))
         spawn_timer = 0
     end
 
     bird:update(dt)
 
-    for k, pipe in pairs(pipes) do
-        pipe:update(dt)
+    for k, pair in pairs(pipePairs) do
+        pair:update(dt)
+    end
 
-        if pipe.x < 0 + pipe.x then
-            table.remove(pipes, k)
+    -- remove any flagged pipes
+    -- we need this second loop, rather than deleting in the previous loop, because
+    -- modifying the table in-place without explicit keys will result in skipping the
+    -- next pipe, since all implicit keys (numerical indices) are automatically shifted
+    -- down after a table removal
+    for k, pair in pairs(pipePairs) do
+        if pair.remove then
+            table.remove(pipePairs, k)
         end
     end
 
@@ -138,8 +160,8 @@ function love.draw()
     -- draw the background starting at top left (0, 0)
     love.graphics.draw(background, -background_scroll, 0)
 
-    for k, pipe in pairs(pipes) do 
-        pipe:render()
+    for k, pair in pairs(pipePairs) do
+        pair:render()
     end
     -- draw the ground on top of the background, toward the bottom of the screen
     -- at its negative looping point
