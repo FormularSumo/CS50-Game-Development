@@ -102,6 +102,10 @@ function love.keypressed(key)
     -- end
 end
 
+function love.touchpressed()
+    love.keyboard.keysPressed['space'] = true
+end
+
 function love.keyboard.wasPressed(key)
     return love.keyboard.keysPressed[key] 
 end
