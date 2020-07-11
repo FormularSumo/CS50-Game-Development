@@ -7,9 +7,9 @@ PIPE_SPEED = 60
 PIPE_HEIGHT = 288
 PIPE_WIDTH = 70
 
-function Pipe:init()
+function Pipe:init(orientation, y)
     self.x = VIRTUAL_WIDTH
-    self.y = math.random(VIRTUAL_HEIGHT / 2, VIRTUAL_HEIGHT - 10)
+    self.y = y
 
     self.width = PIPE_IMAGE:getWidth()   
     self.height = PIPE_HEIGHT
