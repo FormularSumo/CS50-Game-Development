@@ -147,6 +147,13 @@ function love.update(dt)
         for k, pair in pairs(pipePairs) do
             pair:update(dt)
 
+            for l, pipe in pairs(pair.pipes) do
+                if bird:collides(pipe) then
+                    --pause game to show collision
+                    scrolling = false
+                end
+            end
+
             -- if pipe is no longer visible past left edge, remove it from scene
             if pair.x < -PIPE_WIDTH then
                 pair.remove = true
