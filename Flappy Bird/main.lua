@@ -25,7 +25,14 @@ require 'Bird'
 -- Pipe.lua
 require 'Pipe'
 
+-- PipePair.lua
 require 'PipePair'
+
+-- State machine files
+require 'StateMachine'
+require 'states/BaseState'
+require 'states/PlayState'
+require 'states/TitleScreenState'
 
 -- virtual resolution dimensions
 VIRTUAL_WIDTH = 512
@@ -60,6 +67,20 @@ function love.load()
     -- app window title
     love.window.setTitle('Flappy Bird')
     love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    -- load retro text fonts
+    smallFont = love.graphics.newFont('font.ttf', 8)
+    mediumFont = love.graphics.newFont('flappy.ttf', 14)
+    flappyFont = love.graphics.newFont('flappy.ttf', 28)
+    hugeFont = love.graphics.newFont('flappy.ttf', 56)
+    love.graphics.setFont(flappyFont)
+    
+    -- initialize state machine with all state-returning functions
+    gStateMachine = StateMachine {
+        ['title'] = function() return TitleScreenState() end,
+        ['play'] = function() return PlayState() end,
+    }
+    gStateMachine:change('title')
 
     math.randomseed(os.time()) --Randomises randomiser each time program is run. 
 
@@ -121,56 +142,11 @@ end
 
 
 function love.update(dt)
-    if scrolling then
+    background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
+    ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH % GROUND_LOOPING_POINT
+    
+    gStateMachine:update(dt)
 
-        background_scroll = (background_scroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
-
-        ground_scroll = (ground_scroll + GROUND_SCROLL_SPEED * dt) % VIRTUAL_WIDTH % GROUND_LOOPING_POINT
-
-        spawn_timer = spawn_timer + dt
-
-        -- spawn a new PipePair if the timer is past 2 seconds
-        if spawn_timer > 2 then
-            -- modify the last Y coordinate we placed so pipe gaps aren't too far apart
-            -- no higher than 10 pixels below the top edge of the screen,
-            -- and no lower than a gap length (90 pixels) from the bottom
-            local y = math.max(-PIPE_HEIGHT + 10, 
-                math.min(lastY + math.random(-20, 20), VIRTUAL_HEIGHT - GAP_HEIGHT - PIPE_HEIGHT))
-            lastY = y
-            
-            table.insert(pipePairs, PipePair(y))
-            spawn_timer = 0
-        end
-
-        bird:update(dt)
-
-        for k, pair in pairs(pipePairs) do
-            pair:update(dt)
-
-            for l, pipe in pairs(pair.pipes) do
-                if bird:collides(pipe) then
-                    --pause game to show collision
-                    scrolling = false
-                end
-            end
-
-            -- if pipe is no longer visible past left edge, remove it from scene
-            if pair.x < -PIPE_WIDTH then
-                pair.remove = true
-            end
-        end
-
-        -- remove any flagged pipes
-        -- we need this second loop, rather than deleting in the previous loop, because
-        -- modifying the table in-place without explicit keys will result in skipping the
-        -- next pipe, since all implicit keys (numerical indices) are automatically shifted
-        -- down after a table removal
-        for k, pair in pairs(pipePairs) do
-            if pair.remove then
-                table.remove(pipePairs, k)
-            end
-        end
-    end
     love.keyboard.keysPressed = {}
 end
 
@@ -180,14 +156,12 @@ function love.draw()
     -- draw the background starting at top left (0, 0)
     love.graphics.draw(background, -background_scroll, 0)
 
-    for k, pair in pairs(pipePairs) do
-        pair:render()
-    end
+
     -- draw the ground on top of the background, toward the bottom of the screen
     -- at its negative looping point
     love.graphics.draw(ground, -ground_scroll, VIRTUAL_HEIGHT - 16)
-    
-    bird:render()
+
+    gStateMachine:render()
 
     push:finish()
 end
