@@ -40,8 +40,7 @@ function love.load()
     love.window.setTitle('Pong')
     love.window.setMode(0, 0, {
         fullscreen = true,
-        resizable = true,
-        vsync = true
+        resizable = true
     })
     math.randomseed(os.time()) --Randomises randomiser each time program is run. 
 
